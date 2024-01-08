@@ -1,5 +1,9 @@
+import time
+
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+from inference import run_model
 
 class FileWatcherHandler(FileSystemEventHandler):
     def __init__(self, file_list):
@@ -14,7 +18,7 @@ class FileWatcherHandler(FileSystemEventHandler):
                     new_lines = lines[len(self.file_history[event.src_path]):]
                     for i, line in enumerate(new_lines, start=len(self.file_history[event.src_path])):
                         previous_lines = lines[max(0, i-4):i]
-                        run_model(line, previous_lines)
+                        run_model(line, previous_lines)    # TODO: implement run model in different file
                     self.file_history[event.src_path] = lines
 
 def watch_files(file_list):
