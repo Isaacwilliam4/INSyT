@@ -2,6 +2,7 @@ from tokenizers import ByteLevelBPETokenizer
 from transformers import BertForSequenceClassification, BertTokenizer
 import torch
 
+# TODO: replace with actual model (Isaac/Bronze) Maybe move to a different directory if necessary
 def run_model(file_line, previous_lines):
     # Initialize ByteLevelBPETokenizer
     tokenizer = ByteLevelBPETokenizer()
