@@ -18,7 +18,7 @@ class FileWatcherHandler(FileSystemEventHandler):
                     new_lines = lines[len(self.file_history[event.src_path]):]
                     for i, line in enumerate(new_lines, start=len(self.file_history[event.src_path])):
                         previous_lines = lines[max(0, i-4):i]
-                        run_model(line, previous_lines)    # TODO: implement run model in different file
+                        add_to_db(line, previous_lines)
                     self.file_history[event.src_path] = lines
 
 def watch_files(file_list):
@@ -34,3 +34,6 @@ def watch_files(file_list):
         observer.stop()
     observer.join()
 
+
+def add_to_db(file_path, line_number, line, previous_lines):
+    pass
