@@ -1,6 +1,8 @@
+import os
 import sys
 import argparse
 import logging
+from bdb import BdbQuit
 from insyt.db import Database
 from insyt.file_watcher import watch_files
 
@@ -31,16 +33,17 @@ def main():
     file_list = args.watch
     logging.debug(f"Configuring the following files to watch: {file_list}")
 
-    # Create database object
+    # Create and purge database object
     db = Database(args.db)
+    db.purge()
     logging.debug(f"Using database file: {args.db}")
 
     logging.debug("Starting file watcher")
     # Watch files
-    watch_files(file_list)
+    watch_files(file_list, args.db)
 
-    #this is meant just to test some functionality during development TODO: Add actual runtime functionality at the end
-    breakpoint()
+        # this is meant just to test some functionality during development TODO: Add actual runtime functionality at the end
+
 
 
 if __name__ == "__main__":

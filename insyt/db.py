@@ -28,5 +28,9 @@ class Database:
                          (file_path, line_number, line, context, classification, severity, analysis, id))
         self.conn.commit()
 
+    def purge(self):
+        self.cur.execute("DELETE FROM insyt")
+        self.conn.commit()
+
     def __del__(self):
         self.conn.close()
