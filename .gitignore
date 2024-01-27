@@ -1,0 +1,9 @@
+**/.venv
+**/*.egg-info
+**/build
+**/commits.sh
+**/__pycache__
+**/*.db
+**/*.sqlite*
+**/dev.ipynb
+**/dev.html
