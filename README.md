@@ -18,6 +18,14 @@ python -m insyt --watch /path/to/your/file1 /path/to/your/file2
 ```
 Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database.
 
+### Detecting Attacks
+To detect attacks and suspicious behavior, you can use the `--detect` option:
+```bash
+python -m insyt --detect
+```
+This will run the classification algorithm on the lines in the database. If no files have been watched, it will not detect any attacks.
+
+
 ### Custom database paths
 You can also pass in a different database filename using --db. For example:
 ```bash

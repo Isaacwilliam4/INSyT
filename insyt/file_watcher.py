@@ -3,7 +3,7 @@ import logging
 from os.path import dirname, abspath
 
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, PatternMatchingEventHandler
+from watchdog.events import FileSystemEventHandler
 
 from insyt.db import Database
 
