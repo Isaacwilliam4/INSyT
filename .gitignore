@@ -6,3 +6,4 @@
 **/*.db
 **/*.sqlite*
 **/dev.ipynb
+**/dev.html
