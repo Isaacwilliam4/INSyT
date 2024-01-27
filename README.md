@@ -33,3 +33,8 @@ If you want to run in debug mode, use the flag `--debug`
 
 TODO: Explain the rest of the usage
 
+
+## For Developers/Contributors
+
+You can run all unit tests by running `python -m unittest` after isntalling insyt in your venv.
+
