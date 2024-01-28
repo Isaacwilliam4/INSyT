@@ -1,5 +1,4 @@
 import logging
-import concurrent.futures
 from multiprocessing import Pool
 
 from insyt.db import Database
@@ -23,9 +22,7 @@ def analyze(database_file: str):
     log.info("Analysis complete")
 
 def process_line(data: tuple):
-    from insyt.db import Database       # I'm not sure if this is needed but it's here just in case
-    from insyt.ollama import run_model
-
+    """Process a single line of data"""
     database_file, row = data
 
     db = Database('insyt.db')
@@ -36,20 +33,3 @@ def process_line(data: tuple):
 
     analysis = run_model(file_line, previous_lines, classification)
     db.update(row[0], analysis=analysis)
-
-
-
-
-    # def process_line(data: tuple):
-    #     from insyt.db import Database
-    #     from insyt.ollama import run_model
-
-    #     database_file, row = data
-    #     db = Database(database_file)  # THIS IS KIND OF HACKY BUT WE NEED IT FOR NOW TO GET AROUND SQLITE3 MULTIPROCESSING ISSUES
-
-    #     file_line = row[3]  # 'line' column
-    #     previous_lines = row[4]  # 'context' column
-    #     classification = row[5]  # 'classification' column
-
-    #     analysis = run_model(file_line, previous_lines, classification)
-    #     db.update(row[0], analysis=analysis)
