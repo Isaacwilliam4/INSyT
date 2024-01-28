@@ -6,7 +6,7 @@ INSyT is a LLM-based Network Instrusion Detection System designed to detect and 
 
 This software can be installed using pip on the github directory:
 ```bash
-pip install https://github.com/Isaacwilliam4/Network_Intrusion
+pip install git+https://github.com/Isaacwilliam4/Network_Intrusion.git
 ```
 
 ## Usage
@@ -32,6 +32,11 @@ To analyze detected attacks using INSyT's generative AI security assistant, you 
 ```bash
 python -m insyt --analyze
 ```
+**Note:** Generative AI analysis is built on [ollama](https://github.com/ollama/ollama). And as such it is important that ollama is installed on your machine. Visit there github to learn how to install on you specific system. After installing ollama, run the following to create the insyt model:
+```bash
+ollama create insyt -f insyt/models/ollama/Modelfile
+```
+
 
 
 ### Custom database paths
