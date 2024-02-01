@@ -10,6 +10,7 @@ export default function Home() {
   const [isClicked, setIsClicked] = useState(false);
   const [htmlContent, setHtmlContent] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [intrusion_detection_data, setIntrusionDetectionData] = useState([]);
 
   const openai = new OpenAI({
     apiKey: import.meta.env.REACT_APP_OPENAI_API_KEY, // This is also the default, can be omitted
@@ -23,7 +24,7 @@ export default function Home() {
         {
           role: 'system',
           content:
-            `Please generate a report on Network Intrusion Detection model. Please don't include the title.  Please get the summary of reports, urgent issues, frequent issues, and suggestions. Please refer to this format but not exactly follow the text but replace it with the analyzed data: "Summary:\n-one summary - two summary - third summary - fourth summary - fifth summary\n Urgent Issues\n -one issue -second issue -third issue -fourth issue -fifth issue\n Frequent Issues\n -one issue -second issue -thier issue -fourth issue -fifth issue \n Suggestions: \n -one suggestion -second suggestio -third suggestion\n Note: message\n"  Here is Data: Here is Data: ${slack_data}`,
+            `Please generate a report on Network Intrusion Detection model. Please don't include the title.  Please get the summary of reports, urgent attacks, frequent attacks, and suggestions. Please refer to this format but not exactly follow the text but replace it with the analyzed data: "Summary:\n-one summary - two summary - third summary - fourth summary - fifth summary\n Urgent Attacks\n -one issue -second issue -third issue -fourth issue -fifth issue\n Frequent Attacks\n -one issue -second issue -thier issue -fourth issue -fifth issue \n Suggestions: \n -one suggestion -second suggestio -third suggestion\n Note: message\n"  Here is Data: Here is Data: ${intrusion_detection_data}`,
         },
       ],
       model: 'gpt-3.5-turbo',
