@@ -2,8 +2,6 @@ import OpenAI from 'openai';
 
 import { createContext, useEffect, useState } from 'react';
 
-// const openai = new OpenAI(import.meta.env.REACT_APP_OPENAI_API_KEY);
-
 export default function Home() {
   const openai = new OpenAI({
     apiKey: import.meta.env.REACT_APP_OPENAI_API_KEY, // This is also the default, can be omitted
@@ -45,9 +43,9 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className='flex items-center justify-center mt-10'>
       <button className='btn-dark py-2 mx-2 my-2' onClick={getCompletion}>
-        Get #scangun-fulfillment-issues Channel Report
+        Begin Network Intrusion Detection
       </button>
       <h1>{response.length > 0 ? <div>{htmlContent}</div> : <div></div>}</h1>
     </div>
