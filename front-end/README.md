@@ -1,8 +1,20 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# InsyT Network Detection Model Frontend
 
-Currently, two official plugins are available:
+First, move your directory to the front-end folder by running this command:
+```bash
+cd front-end
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Then, you can run this command to download the related node_modules in the front-end folder
+```bash
+npm install
+```
+
+After installing those node_modules, you can run this command to run it on the local machine in the front-end folder
+```bash
+npm run dev
+```
+
+You should also attach the associated env values by replacing them with your OpenAI key and Firebase key on file 'env' and change the file name to '.env' to make it as an environment variables
