@@ -1,14 +1,7 @@
 import OpenAI from 'openai';
 
 import { createContext, useEffect, useState } from 'react';
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from 'recharts';
+import renderLineChart from '../components/line-chart';
 
 export default function Home() {
   const [chartData, setChartData] = useState([]);
@@ -30,7 +23,7 @@ export default function Home() {
         {
           role: 'system',
           content:
-            'Please generate a simple report on supply chain in 500 characters with bullet points. You should also make \n sign as a new line.',
+            `Please generate a report on Network Intrusion Detection model. Please don't include the title.  Please get the summary of reports, urgent issues, frequent issues, and suggestions. Please refer to this format but not exactly follow the text but replace it with the analyzed data: "Summary:\n-one summary - two summary - third summary - fourth summary - fifth summary\n Urgent Issues\n -one issue -second issue -third issue -fourth issue -fifth issue\n Frequent Issues\n -one issue -second issue -thier issue -fourth issue -fifth issue \n Suggestions: \n -one suggestion -second suggestio -third suggestion\n Note: message\n"  Here is Data: Here is Data: ${slack_data}`,
         },
       ],
       model: 'gpt-3.5-turbo',
@@ -67,21 +60,6 @@ export default function Home() {
 
     setHtmlContent(elements);
   };
-
-  const renderLineChart = (
-    <LineChart
-      width={600}
-      height={300}
-      data={chartData}
-      margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-    >
-      <Line type='monotone' dataKey='uv' stroke='#8884d8' />
-      <CartesianGrid stroke='#ccc' strokeDasharray='5 5' />
-      <XAxis dataKey='name' />
-      <YAxis />
-      <Tooltip />
-    </LineChart>
-  );
 
   const SkeletonLoader = () => {
     return (
@@ -144,7 +122,7 @@ export default function Home() {
                 <h4 className='text-2xl font-bold mx-5 my-6'>
                   Network Attack Counts for Each Hour
                 </h4>
-                {renderLineChart}
+                {renderLineChart(chartData)}
               </div>
             </>
           ) : (
