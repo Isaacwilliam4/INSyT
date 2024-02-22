@@ -1,4 +1,4 @@
-from gemma:2b
+from gemma
 
 # set the system message
 SYSTEM """
