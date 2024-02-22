@@ -1,4 +1,4 @@
-from phi
+from gemma:2b
 
 # set the system message
 SYSTEM """
