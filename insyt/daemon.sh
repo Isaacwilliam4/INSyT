@@ -2,5 +2,5 @@
 
 while true
 do
-    python -m insyt --run /path/to/dir
+    python -m insyt --run
 done
