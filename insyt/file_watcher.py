@@ -2,10 +2,16 @@ import time
 import logging
 from os.path import dirname, abspath
 
+import numpy as np
+
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+from rq import Queue
+from redis import Redis
+
 from insyt.db import Database
+from insyt.classification import classify_
 
 class FileWatcherHandler(FileSystemEventHandler):
     def __init__(self, file_list, db_name: str):
@@ -25,10 +31,13 @@ class FileWatcherHandler(FileSystemEventHandler):
                 logging.debug(f'History line length: {history_line_len}')
                 if len(lines) > history_line_len:
                     new_lines = lines[history_line_len:]
+                    start_index = len(self.file_history[event.src_path])
+                    new_lines_ = np.array(list(zip(range(start_index, len(lines)+1), new_lines)))
                     database = Database(self.db_name)
                     for i, line in enumerate(new_lines, start=len(self.file_history[event.src_path])):
                         previous_lines = lines[max(0, i-4):i]
                         self.add_to_db(event.src_path, i+1, line, previous_lines, database)
+                    self.queue_classifications(new_lines_)
                     self.file_history[event.src_path] = lines
 
     def add_to_db(self, file_path, line_number, line, previous_lines, database: Database = None):
@@ -36,6 +45,11 @@ class FileWatcherHandler(FileSystemEventHandler):
             database = Database(self.db_name)
         logging.debug(f'Adding to DB: {file_path}, {line_number}, {line}, {previous_lines}')
         database.insert(file_path=file_path, line_number=line_number, line=line, context=''.join(previous_lines))
+
+    def queue_classifications(self, lines):
+        redis_conn = Redis()
+        q = Queue(connection=redis_conn)
+        q.enqueue(classify_, self.db_name, lines)
 
 
 def watch_files(file_list, database: str):

@@ -7,6 +7,7 @@ from insyt.db import Database
 from insyt.file_watcher import watch_files
 from insyt.classification import classify
 from insyt.analysis import analyze
+from insyt.worker import main as worker_main
 
 # check must be located before importing code that uses 3.10 features
 if sys.version_info < (3, 10):
@@ -22,6 +23,7 @@ def main():
     parser.add_argument("--debug", help="Enable debug logging", action="store_true")
     parser.add_argument("--detect", help="Run classifier to detect suspicious activity", action="store_true")
     parser.add_argument("--watch", nargs="+", help="List of files to watch")
+    parser.add_argument("--run", help="Run the redis worker to process jobs", action="store_true")
     args = parser.parse_args()
 
     if args.debug:
@@ -34,13 +36,17 @@ def main():
     logging.info("Starting INSyT")
     logging.debug(f"Command line arguments: {args}")
 
-    assert args.detect or args.watch or args.analyze, "Must specify either --detect, --watch, or --analyze"
+    assert args.detect or args.watch or args.analyze or args.run, "Must specify either --detect, --watch, --analyze, or --run"
     assert not (args.detect and args.watch), "Cannot specify both --detect and --watch"
     assert not (args.detect and args.analyze), "Cannot specify both --detect and --analyze"
     assert not (args.watch and args.analyze), "Cannot specify both --watch and --analyze"
 
     # Check if the user wants to run the classifier
-    if args.detect:
+    if args.run:
+        logging.debug("Starting worker")
+        worker_main()
+    
+    elif args.detect:
         logging.debug(f"Using database file: {args.db}")
         logging.debug("Running classifier")
         classify(args.db)
@@ -62,8 +68,6 @@ def main():
         analyze(args.db)
 
     # this is meant just to test some functionality during development TODO: Add actual runtime functionality at the end
-
-
 
 if __name__ == "__main__":
     main()
