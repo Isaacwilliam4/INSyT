@@ -12,7 +12,7 @@ log = logging.getLogger("INSyT")
 
 CATEGORIES = ['benign', 'priviledge escalation', 'scan', 'data exfiltration', 'webshell upload', 'command and control', 'password cracking']
 
-def classify(database_file: str):
+def classify(database_file: str, model, tokenizer):
     # Connect to the database
     db = Database(database_file)
 
@@ -25,7 +25,7 @@ def classify(database_file: str):
     for row in null_classifications:
         file_line = row[3]  # 'line' column
         previous_lines = row[4]  # 'context' column
-        class_num = run_model(file_line, previous_lines)
+        class_num = run_model(model, tokenizer, file_line, previous_lines)
         if class_num != 0:
             attacks_detected += 1
         classification = CATEGORIES[class_num]

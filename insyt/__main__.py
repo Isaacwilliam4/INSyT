@@ -1,13 +1,13 @@
-import os
 import sys
 import argparse
 import logging
-from bdb import BdbQuit
 from insyt.db import Database
 from insyt.file_watcher import watch_files
 from insyt.classification import classify
 from insyt.analysis import analyze
 from insyt.worker import main as worker_main
+from transformers import AutoModelForSequenceClassification
+from transformers import AutoTokenizer
 
 # check must be located before importing code that uses 3.10 features
 if sys.version_info < (3, 10):
@@ -41,6 +41,11 @@ def main():
     assert not (args.detect and args.analyze), "Cannot specify both --detect and --analyze"
     assert not (args.watch and args.analyze), "Cannot specify both --watch and --analyze"
 
+    model_ckpt = "distilbert-base-uncased"
+    model_name = 'isaacwilliam4/distilbert-base-uncased-logline-v3'
+    tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
     # Check if the user wants to run the classifier
     if args.run:
         logging.debug("Starting worker")
@@ -49,7 +54,7 @@ def main():
     elif args.detect:
         logging.debug(f"Using database file: {args.db}")
         logging.debug("Running classifier")
-        classify(args.db)
+        classify(args.db, model, tokenizer)
 
     elif args.watch:
         # Create and purge database object

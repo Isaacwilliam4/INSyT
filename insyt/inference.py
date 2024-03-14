@@ -1,9 +1,16 @@
-import random
-
-# TODO: replace with actual model (Isaac/Bronze) Maybe move to a different directory if necessary
-def run_model(file_line, previous_lines):
-    # randomly return a number 0-6, weighted 50% towards 0 and 10% towards 1-6
-    return random.choices(range(7), weights=[10, 1, 1, 1, 1, 1, 1])[0]
+import torch
 
 def run_model_(batch: list, model):
     return [run_model(file_line, "") for file_line in batch]
+
+def run_model(model, tokenizer, file_line, previous_lines):
+
+  tokenized = tokenizer(file_line, padding=True, truncation=True, return_tensors="pt")
+  output = model(**tokenized)
+  # Extract the predicted probabilities or logits
+  predictions = output.logits  # Or outputs.probabilities, depending on your model's output format
+
+  # Convert probabilities/logits to predicted labels
+  predicted_labels = torch.argmax(predictions, dim=1)
+
+  return predicted_labels.item()
