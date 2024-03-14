@@ -37,7 +37,7 @@ def classify(database_file: str):
         log.info(f"Detected {attacks_detected} attacks!!!!")
 
 
-def classify_(database_file, lines):
+def classify_(database_file, lines, model):
     
     db = Database(database_file)
     # breakpoint()

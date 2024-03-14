@@ -18,6 +18,7 @@ class FileWatcherHandler(FileSystemEventHandler):
         self.file_list = [abspath(file) for file in file_list]
         self.file_history = {file: [] for file in self.file_list}
         self.db_name = db_name
+        self.model = F
 
     def on_modified(self, event):
         logging.debug('-----------------------------------------')
@@ -49,7 +50,7 @@ class FileWatcherHandler(FileSystemEventHandler):
     def queue_classifications(self, lines):
         redis_conn = Redis()
         q = Queue(connection=redis_conn)
-        q.enqueue(classify_, self.db_name, lines)
+        q.enqueue(classify_, self.db_name, lines, self.model)
 
 
 def watch_files(file_list, database: str):
