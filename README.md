@@ -14,24 +14,19 @@ pip install git+https://github.com/Isaacwilliam4/Network_Intrusion.git
 ### File Watcher
 To use the file watcher, run the following command in your terminal:
 ```bash
-python -m insyt --watch /path/to/your/file1 /path/to/your/file2
+insyt --watch /path/to/your/file1 /path/to/your/file2
 ```
-Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database.
+Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database. It will also place new lines into a redis queue for classification.
 
 **Note:** Currently the file watcher will clear the database every time you run it. This will be changed in the future.
 
-### Detecting Attacks
-To detect attacks and suspicious behavior, you can use the `--detect` option:
+### Detecting and Analyzing Attacks
+To detect attacks and suspicious behavior, you can use the `--run` option:
 ```bash
-python -m insyt --detect
+insyt --run
 ```
-This will run the classification algorithm on the lines in the database. If no files have been watched, it will not detect any attacks.
+This will run start pulling jobs off of the redis queue, in the order that they were put on the queue. This will either classify new lines in the database, or analyze classified lines, depending on what is in the queue.
 
-### Analyzing Detected Attacks
-To analyze detected attacks using INSyT's generative AI security assistant, you can use the `--analyze` option:
-```bash
-python -m insyt --analyze
-```
 **Note:** Generative AI analysis is built on [ollama](https://github.com/ollama/ollama). And as such it is important that ollama is installed on your machine. Visit there github to learn how to install on you specific system. After installing ollama, run the following to create the insyt model:
 ```bash
 ollama create insyt -f insyt/models/ollama/Modelfile
@@ -42,7 +37,7 @@ ollama create insyt -f insyt/models/ollama/Modelfile
 ### Custom database paths
 You can also pass in a different database filename using --db. For example:
 ```bash
-python -m insyt --watch /path/to/your/file1 /path/to/your/file2 --db /path/to/your/db
+insyt --watch /path/to/your/file1 /path/to/your/file2 --db /path/to/your/db
 ```
 Replace `/path/to/your/db` with the actual path to the database file you want to use.
 
