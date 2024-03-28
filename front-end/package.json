@@ -1,51 +1,62 @@
 {
-  "name": "medium-clone",
+  "name": "react-admin",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
   "dependencies": {
-    "@editorjs/code": "^2.8.0",
-    "@editorjs/editorjs": "^2.27.2",
-    "@editorjs/embed": "^2.5.3",
-    "@editorjs/header": "^2.7.0",
-    "@editorjs/image": "^2.8.1",
-    "@editorjs/inline-code": "^1.4.0",
-    "@editorjs/link": "^2.5.0",
-    "@editorjs/list": "^1.8.0",
-    "@editorjs/marker": "^1.3.0",
-    "@editorjs/quote": "^2.5.0",
-    "@flaticon/flaticon-uicons": "^2.2.0",
-    "aws": "^0.0.3-2",
-    "axios": "^1.4.0",
-    "firebase": "^10.7.1",
-    "framer-motion": "^10.13.0",
-    "openai": "^4.24.7",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/list": "^5.11.3",
+    "@fullcalendar/react": "^5.11.2",
+    "@fullcalendar/timegrid": "^5.11.3",
+    "@mui/icons-material": "^5.10.3",
+    "@mui/material": "^5.10.5",
+    "@mui/x-data-grid": "^5.17.2",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.79.0",
+    "@nivo/geo": "^0.80.0",
+    "@nivo/line": "^0.79.1",
+    "@nivo/pie": "^0.80.0",
+    "@reduxjs/toolkit": "^1.8.5",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "chart.js": "^3.9.1",
+    "formik": "^2.2.9",
     "react": "^18.2.0",
+    "react-chartjs-2": "^4.3.1",
     "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.14.2",
-    "rechart": "^0.0.1",
-    "recharts": "^2.11.0",
-    "vite-plugin-env-compatible": "^2.0.1"
+    "react-pro-sidebar": "^0.7.1",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4",
+    "yup": "^0.32.11"
   },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
-    "autoprefixer": "^10.4.14",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "postcss": "^8.4.27",
-    "tailwindcss": "^3.3.3",
-    "vite": "^4.4.5"
+  "scripts": {
+    "start": "PORT=5000 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
