@@ -50,11 +50,6 @@ const Dashboard = () => {
       .then((response) => {
         console.log(response.data);
         setAttackTypes(response.data);
-        // wait 1 second
-        setTimeout(() => {
-        }, 1000);
-        buildLineChartData();
-        buildBarChartData();
       });
   };
 
@@ -137,6 +132,17 @@ const Dashboard = () => {
       });
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (attackTypes) {
+      buildLineChartData();
+      buildBarChartData();
+    }
+  }, [attackTypes]);
+
   return (
     <Box m='20px'>
       {/* HEADER */}
@@ -155,7 +161,7 @@ const Dashboard = () => {
             onClick={fetchData}
           >
             <DownloadOutlinedIcon sx={{ mr: '10px' }} />
-            Generate Reports
+            Regenerate Reports
           </Button>
         </Box>
       </Box>

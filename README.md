@@ -52,8 +52,6 @@ If you want to run in debug mode, use the flag `--debug`
 TODO: Explain the rest of the usage
 
 Running the frontend (download frontend repo and do npm stuff)
-Redis native to Mac and Linux... Windows set up
-Windows subsystem for linux
 
 
 ## For Developers/Contributors
