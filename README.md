@@ -6,7 +6,7 @@ INSyT is a LLM-based Network Instrusion Detection System designed to detect and 
 
 This software can be installed using pip on the github directory:
 ```bash
-pip install git+https://github.com/Isaacwilliam4/Network_Intrusion.git
+pip install insyt
 ```
 
 ## Usage
@@ -19,6 +19,8 @@ insyt --watch /path/to/your/file1 /path/to/your/file2
 Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database. It will also place new lines into a redis queue for classification.
 
 **Note:** Currently the file watcher will clear the database every time you run it. This will be changed in the future.
+
+**Note for Windows users:** Redis is not officially supported on Windows. However, you can install Redis on Windows for development by following [these instructions](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/).
 
 ### Detecting and Analyzing Attacks
 To detect attacks and suspicious behavior, you can use the `--run` option:
@@ -48,6 +50,10 @@ If you want to run in debug mode, use the flag `--debug`
 
 
 TODO: Explain the rest of the usage
+
+Running the frontend (download frontend repo and do npm stuff)
+Redis native to Mac and Linux... Windows set up
+Windows subsystem for linux
 
 
 ## For Developers/Contributors

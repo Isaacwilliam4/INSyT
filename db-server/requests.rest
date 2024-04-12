@@ -1,2 +1,2 @@
-GET http://localhost:5656/api/attack-types-all
+GET http://localhost:5656/api/except-severity
 Content-Type: application/json

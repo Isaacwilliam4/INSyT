@@ -2,11 +2,14 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { mockDataInvoices } from '../../data/mockData';
+import { useEffect, useState } from 'react';
 import Header from '../../components/Header';
+import axios from 'axios';
 
-const Invoices = () => {
+const LogData = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [logData, setLogData] = useState([]);
   const columns = [
     { field: 'id', headerName: 'ID' },
     {
@@ -30,6 +33,22 @@ const Invoices = () => {
     },
     { field: 'analysis', headerName: 'Analysis', flex: 1 },
   ];
+
+  const fetchLogDataExceptSeverity = async () => {
+    await axios
+      .get('http://localhost:5656/api/except-severity')
+      .then((response) => {
+        console.log(response.data);
+        setLogData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchLogDataExceptSeverity();
+  }, []);
 
   return (
     <Box m='20px'>
@@ -66,10 +85,10 @@ const Invoices = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataInvoices} columns={columns} />
+        <DataGrid checkboxSelection rows={logData} columns={columns} />
       </Box>
     </Box>
   );
 };
 
-export default Invoices;
+export default LogData;
