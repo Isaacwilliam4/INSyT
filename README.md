@@ -55,7 +55,7 @@ If you want to run in debug mode, use the flag `--debug`
 
 The frontend application can be used to view and analyze logline classifications.
 
-To run the application download this repo...
+To run the frontend...
 
 
 ## For Developers/Contributors
