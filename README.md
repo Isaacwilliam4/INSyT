@@ -49,9 +49,13 @@ If you want to run in debug mode, use the flag `--debug`
 
 
 
-TODO: Explain the rest of the usage
+# TODO: Explain the rest of the usage
 
-Running the frontend (download frontend repo and do npm stuff)
+## Frontend
+
+The frontend application can be used to view and analyze logline classifications.
+
+To run the application download this repo...
 
 
 ## For Developers/Contributors
