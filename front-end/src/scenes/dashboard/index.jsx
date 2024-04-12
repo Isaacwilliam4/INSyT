@@ -88,6 +88,8 @@ const Dashboard = () => {
         await fetchNonBenignAttacks();
         await fetchTopAttack();
         await fetchAttackTypes();
+        let lineData = buildLineChartData();
+        console.log(lineData);
       });
   };
 

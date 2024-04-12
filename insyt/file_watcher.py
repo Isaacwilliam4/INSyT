@@ -2,6 +2,8 @@ import time
 import logging
 from os.path import dirname, abspath
 
+import datetime
+
 import numpy as np
 
 from watchdog.observers import Observer
@@ -45,14 +47,15 @@ class FileWatcherHandler(FileSystemEventHandler):
                         new_lines, start=len(self.file_history[event.src_path])
                     ):
                         previous_lines = lines[max(0, i - 4) : i]
+                        date_time = str(datetime.datetime)
                         self.add_to_db(
-                            event.src_path, i + 1, line, previous_lines, database
+                            date_time, event.src_path, i + 1, line, previous_lines, database
                         )
                     self.queue_classifications(new_lines_)
                     self.file_history[event.src_path] = lines
 
     def add_to_db(
-        self, file_path, line_number, line, previous_lines, database: Database = None
+        self, date_time, file_path, line_number, line, previous_lines, database: Database = None
     ):
         if database is None:
             database = Database(self.db_name)
@@ -60,6 +63,7 @@ class FileWatcherHandler(FileSystemEventHandler):
             f"Adding to DB: {file_path}, {line_number}, {line}, {previous_lines}"
         )
         database.insert(
+            date_time=date_time,
             file_path=file_path,
             line_number=line_number,
             line=line,

@@ -6,7 +6,7 @@ class Database:
         self.cur = self.conn.cursor()
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS insyt
-            (id INTEGER PRIMARY KEY, file_path text, line_number int, line text, context text, classification text, severity text, analysis text)''')
+            (id INTEGER PRIMARY KEY, date_time text, file_path text, line_number int, line text, context text, classification text, severity text, analysis text)''')
         self.conn.commit()
 
     def fetch(self):
@@ -19,18 +19,21 @@ class Database:
         rows = self.cur.fetchall()
         return rows
 
-    def insert(self, file_path=None, line_number=None, line=None, context=None, classification=None, severity=None, analysis=None):
-        self.cur.execute("INSERT INTO insyt VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)",
-                         (file_path, line_number, line, context, classification, severity, analysis))
+    def insert(self, date_time= None, file_path=None, line_number=None, line=None, context=None, classification=None, severity=None, analysis=None):
+        self.cur.execute("INSERT INTO insyt VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
+                         (date_time, file_path, line_number, line, context, classification, severity, analysis))
         self.conn.commit()
 
     def remove(self, id):
         self.cur.execute("DELETE FROM insyt WHERE id=?", (id,))
         self.conn.commit()
 
-    def update(self, id, file_path=None, line_number=None, line=None, context=None, classification=None, severity=None, analysis=None):
+    def update(self, id, date_time=None, file_path=None, line_number=None, line=None, context=None, classification=None, severity=None, analysis=None):
         query = "UPDATE insyt SET "
         params = []
+        if date_time is not None:
+            query += "date_time = ?, "
+            params.append(date_time)
         if file_path is not None:
             query += "file_path = ?, "
             params.append(file_path)
