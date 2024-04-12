@@ -1,6 +1,7 @@
 import sys
 import argparse
 import logging
+from pathlib import Path
 from insyt.db import Database
 from insyt.file_watcher import watch_files
 from insyt.worker import main as worker_main
@@ -14,7 +15,9 @@ def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser()
     # add -- arguments
-    parser.add_argument("--db", help="Database file to use", default="insyt.db")
+    parser.add_argument(
+        "--db", help="Database file to use", default="~/.insyt/insyt.db"
+    )
     parser.add_argument("--debug", help="Enable debug logging", action="store_true")
     parser.add_argument("--watch", nargs="+", help="List of files to watch")
     parser.add_argument(
@@ -52,6 +55,9 @@ def main():
         worker_main()
 
     elif args.watch:
+        # check database parent directory
+        db_path = Path(args.db)
+        db_path.parent.mkdir(parents=True, exist_ok=True)
         # Create and purge database object
         db = Database(args.db)
         db.purge()
@@ -61,8 +67,6 @@ def main():
         logging.debug("Starting file watcher")
         # Watch files
         watch_files(file_list, args.db, tokenizer_ckpt, model_name)
-
-    # this is meant just to test some functionality during development TODO: Add actual runtime functionality at the end
 
 
 if __name__ == "__main__":

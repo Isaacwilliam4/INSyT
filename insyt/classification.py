@@ -41,11 +41,13 @@ def classify(database_file, lines, tokenizer, model):
     db = Database(database_file)
 
     log_lines = lines[:, 1].tolist()
-    class_nums = run_model(log_lines, model, tokenizer)
-    for class_num, id, line in zip(class_nums, lines[:, 0], log_lines):
+    class_nums, confidences = run_model(log_lines, model, tokenizer)
+    for class_num, id, line, confidence in zip(
+        class_nums, lines[:, 0], log_lines, confidences
+    ):
         classification = CATEGORIES[class_num]
         id = int(id) + 1
-        db.update(id, classification=classification)
+        db.update(id, classification=classification, confidence=confidence)
 
         if classification != "benign":
             log.info(f"Detected attack on line {id}: {line}")
