@@ -7,10 +7,6 @@ from insyt.db import Database
 from insyt.file_watcher import watch_files
 from insyt.worker import main as worker_main
 
-# check must be located before importing code that uses 3.10 features
-if sys.version_info < (3, 10):
-    exit("Error: Python version 3.10 or higher is required.")
-
 
 def main():
     # Parse command line arguments
@@ -31,6 +27,12 @@ def main():
         "--model",
         help="Model to use",
         default="isaacwilliam4/distilbert-base-uncased-logline-v3",
+    )
+    parser.add_argument(
+        "--max-batch-size",
+        type=int,
+        default=32,
+        help="Maximum batch size for the model",
     )
     args = parser.parse_args()
 
@@ -70,8 +72,17 @@ def main():
         logging.debug(f"Configuring the following files to watch: {file_list}")
         logging.debug("Starting file watcher")
         # Watch files
-        watch_files(file_list, db_path, tokenizer_ckpt, model_name)
+        watch_files(
+            file_list,
+            db_path,
+            tokenizer_ckpt,
+            model_name,
+            max_batch_size=args.max_batch_size,
+        )
 
 
 if __name__ == "__main__":
+    # check must be located before importing code that uses 3.10 features
+    if sys.version_info < (3, 10):
+        exit("Error: Python version 3.10 or higher is required.")
     main()

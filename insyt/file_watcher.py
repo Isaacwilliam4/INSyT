@@ -19,12 +19,20 @@ from insyt.classification import classify
 
 
 class FileWatcherHandler(FileSystemEventHandler):
-    def __init__(self, file_list, db_name: str, tokenizer_ckpt: str, model_name: str):
+    def __init__(
+        self,
+        file_list,
+        db_name: str,
+        tokenizer_ckpt: str,
+        model_name: str,
+        max_batch_size: int = 32,
+    ):
         self.file_list = [abspath(file) for file in file_list]
         self.file_history = {file: [] for file in self.file_list}
         self.db_name = db_name
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_ckpt)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name)
+        self.max_batch_size = max_batch_size
 
     def on_modified(self, event):
         logging.debug("-----------------------------------------")
@@ -84,12 +92,22 @@ class FileWatcherHandler(FileSystemEventHandler):
         )
 
     def queue_classifications(self, lines):
+        # batch the lines
+        batch_size = min(self.max_batch_size, len(lines))
+        batches = np.array_split(lines, len(lines) // batch_size)
         redis_conn = Redis()
         q = Queue(connection=redis_conn)
-        q.enqueue(classify, self.db_name, lines, self.tokenizer, self.model)
+        for batch in batches:
+            q.enqueue(classify, self.db_name, batch, self.tokenizer, self.model)
 
 
-def watch_files(file_list, database: str, tokenizer_ckpt: str, model_name: str):
+def watch_files(
+    file_list,
+    database: str,
+    tokenizer_ckpt: str,
+    model_name: str,
+    max_batch_size: int = 32,
+):
     event_handler = FileWatcherHandler(file_list, database, tokenizer_ckpt, model_name)
     logging.debug(f"Starting observers on files: {file_list}")
     observer = Observer()
