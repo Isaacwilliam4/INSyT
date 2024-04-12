@@ -6,7 +6,7 @@ from insyt.db import Database
 log = logging.getLogger("INSyT")
 
 
-def run_model(id, file_line, previous_lines, classification):
+def run_model(id, file_line, previous_lines, classification, database_file: str):
     """Run the analysis model given the line and context"""
     log.debug(f"Running analysis model on line: {file_line}")
     log.debug(f"Previous lines: {previous_lines}")
@@ -22,6 +22,6 @@ def run_model(id, file_line, previous_lines, classification):
     )
     log.debug(f"Response: {response}")
 
-    db = Database("insyt.db")
+    db = Database(database_file)
     db.update(id, analysis=response["message"]["content"])
     return response["message"]["content"]
