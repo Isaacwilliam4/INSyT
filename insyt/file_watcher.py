@@ -47,15 +47,28 @@ class FileWatcherHandler(FileSystemEventHandler):
                         new_lines, start=len(self.file_history[event.src_path])
                     ):
                         previous_lines = lines[max(0, i - 4) : i]
-                        date_time = str(datetime.datetime)
+                        date_time = datetime.datetime.now().strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
                         self.add_to_db(
-                            date_time, event.src_path, i + 1, line, previous_lines, database
+                            date_time,
+                            event.src_path,
+                            i + 1,
+                            line,
+                            previous_lines,
+                            database,
                         )
                     self.queue_classifications(new_lines_)
                     self.file_history[event.src_path] = lines
 
     def add_to_db(
-        self, date_time, file_path, line_number, line, previous_lines, database: Database = None
+        self,
+        date_time,
+        file_path,
+        line_number,
+        line,
+        previous_lines,
+        database: Database = None,
     ):
         if database is None:
             database = Database(self.db_name)
@@ -87,7 +100,7 @@ def watch_files(file_list, database: str, tokenizer_ckpt: str, model_name: str):
     observer.start()
     try:
         while True:
-            time.sleep(1)
+            time.sleep(0.5)
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
