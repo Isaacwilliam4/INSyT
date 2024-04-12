@@ -25,7 +25,7 @@ To detect attacks and suspicious behavior, you can use the `--run` option:
 ```bash
 insyt --run
 ```
-This will run start pulling jobs off of the redis queue, in the order that they were put on the queue. This will either classify new lines in the database, or analyze classified lines, depending on what is in the queue.
+This will start pulling jobs off of the redis queue in the order that they were put on. This will either classify new lines in the database, or analyze classified lines, depending on what is in the queue.
 
 **Note:** Generative AI analysis is built on [ollama](https://github.com/ollama/ollama). And as such it is important that ollama is installed on your machine. Visit there github to learn how to install on you specific system. After installing ollama, run the following to create the insyt model:
 ```bash

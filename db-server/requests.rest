@@ -1,2 +1,2 @@
-GET http://localhost:5656/api/all-attack-types
+GET http://localhost:5656/api/attack-types-all
 Content-Type: application/json
