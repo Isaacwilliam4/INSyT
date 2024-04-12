@@ -108,7 +108,9 @@ def watch_files(
     model_name: str,
     max_batch_size: int = 32,
 ):
-    event_handler = FileWatcherHandler(file_list, database, tokenizer_ckpt, model_name)
+    event_handler = FileWatcherHandler(
+        file_list, database, tokenizer_ckpt, model_name, max_batch_size
+    )
     logging.debug(f"Starting observers on files: {file_list}")
     observer = Observer()
     directories = set(dirname(file) for file in file_list)

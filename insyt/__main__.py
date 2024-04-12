@@ -72,12 +72,13 @@ def main():
         logging.debug(f"Configuring the following files to watch: {file_list}")
         logging.debug("Starting file watcher")
         # Watch files
+        max_batch_size = args.max_batch_size
         watch_files(
             file_list,
             db_path,
             tokenizer_ckpt,
             model_name,
-            max_batch_size=args.max_batch_size,
+            max_batch_size=max_batch_size,
         )
 
 
