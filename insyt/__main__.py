@@ -1,3 +1,4 @@
+import os
 import sys
 import argparse
 import logging
@@ -16,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser()
     # add -- arguments
     parser.add_argument(
-        "--db", help="Database file to use", default="~/.insyt/insyt.db"
+        "--db", help="Database file to use", default="~/.cache/insyt/insyt.db"
     )
     parser.add_argument("--debug", help="Enable debug logging", action="store_true")
     parser.add_argument("--watch", nargs="+", help="List of files to watch")
@@ -56,17 +57,20 @@ def main():
 
     elif args.watch:
         # check database parent directory
-        db_path = Path(args.db)
-        db_path.parent.mkdir(parents=True, exist_ok=True)
+        db_path = Path(os.path.expanduser(args.db))
+        db_dir = db_path.parent
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir)
+            logging.debug(f"Creating database directory: {db_dir}")
         # Create and purge database object
-        db = Database(args.db)
+        db = Database(db_path)
         db.purge()
         logging.debug(f"Using database file: {args.db}")
         file_list = args.watch
         logging.debug(f"Configuring the following files to watch: {file_list}")
         logging.debug("Starting file watcher")
         # Watch files
-        watch_files(file_list, args.db, tokenizer_ckpt, model_name)
+        watch_files(file_list, db_path, tokenizer_ckpt, model_name)
 
 
 if __name__ == "__main__":

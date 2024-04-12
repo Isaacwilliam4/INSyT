@@ -59,6 +59,7 @@ def classify(database_file, lines, tokenizer, model):
                 line,
                 db.fetch_sql(f"SELECT * FROM insyt WHERE id={id}")[0][4],
                 classification,
+                database_file,
             )
 
     return "chicken nuggets"
