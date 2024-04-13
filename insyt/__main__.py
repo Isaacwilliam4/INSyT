@@ -2,6 +2,9 @@ import os
 import sys
 import argparse
 import logging
+import requests
+import subprocess
+import atexit
 from pathlib import Path
 from insyt.db import Database
 from insyt.file_watcher import watch_files
@@ -34,6 +37,15 @@ def main():
         default=32,
         help="Maximum batch size for the model",
     )
+    parser.add_argument(
+        "--inf-server-port", type=int, default=8000, help="Inference server port"
+    )
+    parser.add_argument(
+        "inf-server-reload",
+        action="store_true",
+        help="Enable auto-reload",
+        default=False,
+    )
     args = parser.parse_args()
 
     if args.debug:
@@ -51,6 +63,38 @@ def main():
 
     tokenizer_ckpt = args.tokenizer
     model_name = args.model
+
+    # Start the inference server
+    with open(
+        os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "w"
+    ) as log_file:
+        server_process = subprocess.Popen(
+            [
+                "insyt-inf-server",
+                "--port",
+                str(args.inf_server_port),
+                "--reload",
+            ],
+            stdout=log_file,
+            stderr=log_file,
+        )
+
+    # log server output to log file
+
+    # Wait for the server to start up
+    while True:
+        try:
+            response = requests.get("http://localhost:8000/health")
+            if response.status_code == 200:
+                break
+        except requests.exceptions.ConnectionError:
+            pass
+
+    def cleanup():
+        server_process.terminate()
+        server_process.wait()
+
+    atexit.register(cleanup)
 
     # Check if the user wants to run the classifier
     if args.run:

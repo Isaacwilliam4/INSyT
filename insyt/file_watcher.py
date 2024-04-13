@@ -93,12 +93,14 @@ class FileWatcherHandler(FileSystemEventHandler):
 
     def queue_classifications(self, lines):
         # batch the lines
-        batch_size = min(self.max_batch_size, len(lines))
-        batches = np.array_split(lines, len(lines) // batch_size)
         redis_conn = Redis()
-        q = Queue(connection=redis_conn)
-        for batch in batches:
-            q.enqueue(classify, self.db_name, batch, self.tokenizer, self.model)
+        q = Queue("classification", connection=redis_conn)
+        q.enqueue(
+            classify,
+            self.db_name,
+            lines,
+            self.max_batch_size,
+        )
 
 
 def watch_files(
