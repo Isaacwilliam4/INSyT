@@ -1,8 +1,6 @@
 import logging
 import requests
 
-import numpy as np
-
 from rq import Queue
 from redis import Redis
 
