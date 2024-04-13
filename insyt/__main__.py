@@ -79,8 +79,6 @@ def main():
             stderr=log_file,
         )
 
-    # log server output to log file
-
     # Wait for the server to start up
     while True:
         try:
