@@ -8,7 +8,7 @@ from insyt.db import Database
 
 from insyt.analysis import query_analysis
 
-from insyt.inference_server import ClassificationRequest
+from insyt.server import ClassificationRequest
 
 
 log = logging.getLogger("INSyT")
@@ -50,7 +50,7 @@ def classify(
     log_lines = lines[:, 1].tolist()
     request = ClassificationRequest(lines=log_lines, max_batch_size=max_batch_size)
 
-    response = requests.post(f"{inf_server}/classify", json=request.model_dump())
+    response = requests.post(f"{inf_server}/api/classify", json=request.model_dump())
 
     if response.status_code != 200:
         log.error(f"Failed to classify logs: {response.text}")
@@ -80,5 +80,3 @@ def classify(
                 database_file,
                 inf_server,
             )
-
-    return "chicken nuggets"

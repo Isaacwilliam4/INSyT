@@ -1,8 +1,8 @@
 import argparse
+from typing import List
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
 
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
@@ -10,6 +10,8 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import numpy as np
 
 import ollama
+
+from insyt.db_api import router as db_router
 
 
 class ClassificationRequest(BaseModel):
@@ -33,6 +35,8 @@ class AnalysisResponse(BaseModel):
 
 
 app = FastAPI()
+app.include_router(db_router)
+
 class_tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 class_model = AutoModelForSequenceClassification.from_pretrained(
     "isaacwilliam4/distilbert-base-uncased-logline-v3"
@@ -44,7 +48,7 @@ def health():
     return {"status": "healthy"}
 
 
-@app.post("/classify")
+@app.post("/api/classify")
 def run_classification_model(request: ClassificationRequest):
     max_batch_size = request.max_batch_size
     batch_size = min(max_batch_size, len(request.lines))
@@ -70,7 +74,7 @@ def run_classification_model(request: ClassificationRequest):
     return response
 
 
-@app.post("/analyze")
+@app.post("/api/analyze")
 def run_analysis_model(request: AnalysisRequest):
     prompt = (
         f"The following line has been classified as '{request.classification}':\n\n```{request.file_line}```\n\n"
@@ -98,7 +102,7 @@ def main():
     )
     args = parser.parse_args()
 
-    uvicorn.run("insyt.inference_server:app", reload=args.reload, port=args.port)
+    uvicorn.run("insyt.server:app", reload=args.reload, port=args.port)
 
 
 if __name__ == "__main__":

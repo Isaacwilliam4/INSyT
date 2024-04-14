@@ -1,10 +1,11 @@
 import os
 import sys
-import argparse
+import atexit
 import logging
+import argparse
+import datetime
 import requests
 import subprocess
-import atexit
 from pathlib import Path
 from insyt.db import Database
 from insyt.file_watcher import watch_files
@@ -64,10 +65,26 @@ def main():
     tokenizer_ckpt = args.tokenizer
     model_name = args.model
 
+    # check database parent directory
+    db_path = Path(os.path.expanduser(args.db))
+    os.environ["INSYT_DB_PATH"] = str(db_path)
+    db_dir = db_path.parent
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+        logging.debug(f"Creating database directory: {db_dir}")
+
     # Start the inference server
     with open(
-        os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "w"
+        os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "a"
     ) as log_file:
+        log_file.write(
+            "_________________________ Starting Inference Server _________________________\n"
+        )
+        log_file.write(
+            "_______________________________________________________________________________\n"
+        )
+        log_file.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+
         server_process = subprocess.Popen(
             [
                 "insyt-inf-server",
@@ -100,12 +117,6 @@ def main():
         worker_main()
 
     elif args.watch:
-        # check database parent directory
-        db_path = Path(os.path.expanduser(args.db))
-        db_dir = db_path.parent
-        if not os.path.exists(db_dir):
-            os.makedirs(db_dir)
-            logging.debug(f"Creating database directory: {db_dir}")
         # Create and purge database object
         db = Database(db_path)
         db.purge()

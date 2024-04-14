@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from insyt.inference_server import AnalysisRequest
+from insyt.server import AnalysisRequest
 from insyt.db import Database
 
 log = logging.getLogger("INSyT")
@@ -26,7 +26,9 @@ def query_analysis(
         classification=classification,
     )
 
-    response = requests.post(inference_server + "/analyze", json=request.model_dump())
+    response = requests.post(
+        inference_server + "/api/analyze", json=request.model_dump()
+    )
 
     if response.status_code != 200:
         log.error(f"Failed to analyze line: {file_line}")
