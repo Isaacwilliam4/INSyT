@@ -24,7 +24,7 @@ To start monitoring log files, run the following command in your terminal:
 ```bash
 insyt --watch /path/to/your/file1 /path/to/your/file2 /path/to/dir/
 ```
-Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database. If you pass in a directory. The system will monitor all files within that directory.
+Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database. If you pass in a directory, the system will monitor all files within that directory.
 
 It will also place new lines into a redis queue for classification and analysis, as well as process those jobs.
 
