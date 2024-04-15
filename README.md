@@ -20,14 +20,15 @@ You can still use the software without installing ollama, just without analysis 
 ## Usage
 
 ### Start monitoring log lines
-To use the file watcher, run the following command in your terminal:
+To start monitoring log files, run the following command in your terminal:
 ```bash
-insyt --watch /path/to/your/file1 /path/to/your/file2
+insyt --watch /path/to/your/file1 /path/to/your/file2 /path/to/dir/
 ```
-Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database. It will also place new lines into a redis queue for classification.
+Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to the files you want to watch. The file watcher will then monitor these files for any changes and load the new lines into the database. If you pass in a directory. The system will monitor all files within that directory.
+
+It will also place new lines into a redis queue for classification and analysis, as well as process those jobs.
 
 **Note:** Currently the file watcher will clear the database every time you run it. This will be changed in the future.
-
 
 ### Custom database paths
 The INSyT sqlite database is by default contained at `~/.cache/insyt/insyt.db`. You can also pass in a different database filename using the --db flag. For example:
