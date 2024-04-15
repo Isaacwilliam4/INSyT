@@ -45,6 +45,7 @@ def main():
         default=5656,
         help="Port to run inference, db, and frontend servers",
     )
+    parser.add_argument("--purge", help="Purge the database", action="store_true")
     args = parser.parse_args()
 
     if args.debug:
@@ -113,9 +114,11 @@ def main():
         worker_main()
 
     elif args.watch:
-        # Create and purge database object
+        # Create database object
         db = Database(db_path)
-        db.purge()
+        if args.purge:
+            logging.debug("Purging database")
+            db.purge()
         logging.debug(f"Using database file: {args.db}")
         file_list = args.watch
         logging.debug(f"Configuring the following files to watch: {file_list}")
