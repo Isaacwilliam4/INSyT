@@ -7,10 +7,11 @@ def main():
     redis_conn = Redis()
 
     # Create a queue
-    q = Queue(connection=redis_conn)
+    class_q = Queue("classification", connection=redis_conn)
+    analysis_q = Queue("analysis", connection=redis_conn)
 
     # Create a worker
-    w = Worker([q], connection=redis_conn)
+    w = Worker([class_q, analysis_q], connection=redis_conn)
 
     # Process the queue
     w.work()

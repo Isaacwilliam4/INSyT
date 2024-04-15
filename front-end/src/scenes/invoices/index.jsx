@@ -41,7 +41,11 @@ const LogData = () => {
 
   const fetchLogDataExceptSeverity = async () => {
     await axios
-      .get('http://localhost:5656/api/except-severity')
+      .get('http://localhost:5656/api/db/except-severity', {
+        params: {
+          severity: 0.0,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         setLogData(response.data);

@@ -1,7 +1,12 @@
 import os
 import sys
-import argparse
+import atexit
 import logging
+import argparse
+import datetime
+import requests
+import threading
+import subprocess
 from pathlib import Path
 from insyt.db import Database
 from insyt.file_watcher import watch_files
@@ -34,6 +39,9 @@ def main():
         default=32,
         help="Maximum batch size for the model",
     )
+    parser.add_argument(
+        "--inf-server-port", type=int, default=5656, help="Inference server port"
+    )
     args = parser.parse_args()
 
     if args.debug:
@@ -49,8 +57,52 @@ def main():
     assert args.watch or args.run, "Must specify either --watch, or --run"
     assert not (args.watch and args.run), "Cannot specify both --watch and --run"
 
-    tokenizer_ckpt = args.tokenizer
-    model_name = args.model
+    # check database parent directory
+    db_path = Path(os.path.expanduser(args.db))
+    os.environ["INSYT_DB_PATH"] = str(db_path)
+    db_dir = db_path.parent
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+        logging.debug(f"Creating database directory: {db_dir}")
+
+    # Start the inference server
+    logging.info("Starting Inference Server at port %s", args.inf_server_port)
+    logging.info("Logs will be written to ~/.cache/insyt/insyt-inf-server.log")
+    with open(
+        os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "a"
+    ) as log_file:
+        log_file.write(
+            "_________________________ Starting Inference Server _________________________\n"
+        )
+        log_file.write(
+            "_______________________________________________________________________________\n"
+        )
+        log_file.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+
+        server_process = subprocess.Popen(
+            [
+                "insyt-server",
+                "--port",
+                str(args.inf_server_port),
+            ],
+            stdout=log_file,
+            stderr=log_file,
+        )
+
+    # Wait for the server to start up
+    while True:
+        try:
+            response = requests.get(f"http://localhost:{args.inf_server_port}/health")
+            if response.status_code == 200:
+                break
+        except requests.exceptions.ConnectionError:
+            pass
+
+    def cleanup():
+        server_process.terminate()
+        server_process.wait()
+
+    atexit.register(cleanup)
 
     # Check if the user wants to run the classifier
     if args.run:
@@ -58,12 +110,6 @@ def main():
         worker_main()
 
     elif args.watch:
-        # check database parent directory
-        db_path = Path(os.path.expanduser(args.db))
-        db_dir = db_path.parent
-        if not os.path.exists(db_dir):
-            os.makedirs(db_dir)
-            logging.debug(f"Creating database directory: {db_dir}")
         # Create and purge database object
         db = Database(db_path)
         db.purge()
@@ -72,13 +118,22 @@ def main():
         logging.debug(f"Configuring the following files to watch: {file_list}")
         logging.debug("Starting file watcher")
         # Watch files
-        watch_files(
-            file_list,
-            db_path,
-            tokenizer_ckpt,
-            model_name,
-            max_batch_size=args.max_batch_size,
+        max_batch_size = args.max_batch_size
+
+        watch_thread = threading.Thread(
+            target=watch_files,
+            args=(file_list, db_path, max_batch_size),
+            daemon=True,
         )
+
+        watch_thread.start()
+
+        def cleanup_watcher():
+            watch_thread.join()
+
+        atexit.register(cleanup_watcher)
+
+        worker_main()
 
 
 if __name__ == "__main__":
