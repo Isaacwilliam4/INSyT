@@ -287,10 +287,11 @@ const Dashboard = () => {
                       variant='h5'
                       fontWeight='600'
                     >
-                      {log.line.substring(20, 50)}...
+                      {log.line.substring(0, 30)}...
                     </Typography>
                     <Typography color={colors.grey[100]}>
-                      {log.line.substring(0, 15)}
+                      {/* {log.line.substring(0, 15)} */}
+                      {log.date_time}
                     </Typography>
                   </Box>
                   <Box color={colors.grey[100]}>{log.date}</Box>

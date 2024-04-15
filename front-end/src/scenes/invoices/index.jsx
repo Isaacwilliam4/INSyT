@@ -18,6 +18,11 @@ const LogData = () => {
       flex: 1,
       cellClassName: 'name-column--cell',
     },
+    {
+      field: 'date_time',
+      headerName: 'Date Time',
+      flex: 1,
+    },
     { field: 'line_number', headerName: 'Line Number', flex: 1 },
     { field: 'line', headerName: 'Line', flex: 1 },
     { field: 'context', headerName: 'Context', flex: 1 },
