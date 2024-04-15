@@ -1,6 +1,8 @@
 import logging
 import requests
 
+import numpy as np
+
 from rq import Queue
 from redis import Redis
 
@@ -42,12 +44,15 @@ CATEGORIES = [
 
 def classify(
     database_file,
-    lines,
     max_batch_size=32,
     inf_server="http://localhost:8000",
 ):
     db = Database(database_file)
-    log_lines = lines[:, 1].tolist()
+    db_lines = np.array(
+        db.fetch_sql("SELECT id, line FROM insyt where classification IS NULL")
+    )
+    ids = db_lines[:, 0].tolist()
+    log_lines = db_lines[:, 1].tolist()
     request = ClassificationRequest(lines=log_lines, max_batch_size=max_batch_size)
 
     response = requests.post(f"{inf_server}/api/classify", json=request.model_dump())
@@ -60,11 +65,9 @@ def classify(
     confidences = response.json()["confidences"]
 
     # class_nums, confidences = run_model(log_lines, model, tokenizer)
-    for class_num, id, line, confidence in zip(
-        class_nums, lines[:, 0], log_lines, confidences
-    ):
+    for class_num, id, line, confidence in zip(class_nums, ids, log_lines, confidences):
         classification = CATEGORIES[class_num]
-        id = int(id) + 1
+        id = int(id)
         db.update(id, classification=classification, confidence=confidence)
 
         if classification != "benign":

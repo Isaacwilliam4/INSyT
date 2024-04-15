@@ -32,10 +32,7 @@ def watch_files(
                 previous_lines = lines[max(0, i - 4) : i]
                 date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 add_to_db(date_time, file_path, i + 1, line, previous_lines, database)
-            new_lines_ = np.array(
-                list(zip(range(start_index, len(lines) + 1), new_lines))
-            )
-            queue_classifications(new_lines_, database, max_batch_size)
+            queue_classifications(database, max_batch_size)
 
 
 def add_to_db(date_time, file_path, line_number, line, previous_lines, db_name):
@@ -50,7 +47,7 @@ def add_to_db(date_time, file_path, line_number, line, previous_lines, db_name):
     )
 
 
-def queue_classifications(lines, db_name, max_batch_size):
+def queue_classifications(db_name, max_batch_size):
     redis_conn = Redis()
     q = Queue("classification", connection=redis_conn)
-    q.enqueue(classify, db_name, lines, max_batch_size)
+    q.enqueue(classify, db_name, max_batch_size)
