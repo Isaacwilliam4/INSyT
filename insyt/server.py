@@ -1,7 +1,10 @@
+import os
 import argparse
 from typing import List
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 import torch
@@ -35,7 +38,19 @@ class AnalysisResponse(BaseModel):
 
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(db_router)
+
 
 class_tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 class_model = AutoModelForSequenceClassification.from_pretrained(
@@ -91,12 +106,22 @@ def run_analysis_model(request: AnalysisRequest):
     return reponse
 
 
+app.mount(
+    "/",
+    StaticFiles(
+        directory=os.path.join(os.path.dirname(__file__), "frontend/dist"),
+        html=True,
+    ),
+    name="app",
+)
+
+
 def main():
     import uvicorn
 
     # get port as arg
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8000, help="Port to run server on")
+    parser.add_argument("--port", type=int, default=5656, help="Port to run server on")
     parser.add_argument(
         "--reload", action="store_true", help="Enable auto-reload", default=False
     )

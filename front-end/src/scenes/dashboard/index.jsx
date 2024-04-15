@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   const fetchNonBenignAttacks = async () => {
     const response = await axios
-      .get('http://localhost:5656/api/non-benign')
+      .get('http://localhost:5656/api/db/non-benign')
       .then((response) => {
         setNonBenignAttacks(response.data);
       });
@@ -38,7 +38,7 @@ const Dashboard = () => {
 
   const fetchTopAttack = async () => {
     const response = await axios
-      .get('http://localhost:5656/api/top-attack')
+      .get('http://localhost:5656/api/db/top-attack')
       .then((response) => {
         setTopAttack(response.data);
       });
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const fetchAttackTypes = async () => {
     const response = await axios
-      .get('http://localhost:5656/api/attack-types-all')
+      .get('http://localhost:5656/api/db/attack-types-all')
       .then((response) => {
         setAttackTypes(response.data);
       });
@@ -83,7 +83,7 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     const response = await axios
-      .get('http://localhost:5656/api/data')
+      .get('http://localhost:5656/api/db/data')
       .then(async (response) => {
         setDb(response.data);
         setLogDataLength(response.data.length);

@@ -40,7 +40,7 @@ def main():
         help="Maximum batch size for the model",
     )
     parser.add_argument(
-        "--inf-server-port", type=int, default=8000, help="Inference server port"
+        "--inf-server-port", type=int, default=5656, help="Inference server port"
     )
     args = parser.parse_args()
 
@@ -66,6 +66,8 @@ def main():
         logging.debug(f"Creating database directory: {db_dir}")
 
     # Start the inference server
+    logging.info("Starting Inference Server at port %s", args.inf_server_port)
+    logging.info("Logs will be written to ~/.cache/insyt/insyt-inf-server.log")
     with open(
         os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "a"
     ) as log_file:
@@ -90,7 +92,7 @@ def main():
     # Wait for the server to start up
     while True:
         try:
-            response = requests.get("http://localhost:8000/health")
+            response = requests.get(f"http://localhost:{args.inf_server_port}/health")
             if response.status_code == 200:
                 break
         except requests.exceptions.ConnectionError:

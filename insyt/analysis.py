@@ -13,7 +13,7 @@ def query_analysis(
     previous_lines: str,
     classification,
     database_file: str,
-    inference_server: str = "http://localhost:8000",
+    inference_server: str = "http://localhost:5656",
 ):
     """Run the analysis model given the line and context"""
     log.debug(f"Running analysis model on line: {file_line}")

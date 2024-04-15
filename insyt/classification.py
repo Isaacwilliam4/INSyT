@@ -45,7 +45,7 @@ CATEGORIES = [
 def classify(
     database_file,
     max_batch_size=32,
-    inf_server="http://localhost:8000",
+    inf_server="http://localhost:5656",
 ):
     db = Database(database_file)
     db_lines = np.array(
