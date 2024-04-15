@@ -1,2 +1,0 @@
-GET http://localhost:5656/api/data
-Content-Type: application/json
