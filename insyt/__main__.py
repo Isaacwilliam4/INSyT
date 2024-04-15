@@ -40,7 +40,10 @@ def main():
         help="Maximum batch size for the model",
     )
     parser.add_argument(
-        "--inf-server-port", type=int, default=5656, help="Inference server port"
+        "--port",
+        type=int,
+        default=5656,
+        help="Port to run inference, db, and frontend servers",
     )
     args = parser.parse_args()
 
@@ -83,7 +86,7 @@ def main():
             [
                 "insyt-server",
                 "--port",
-                str(args.inf_server_port),
+                str(args.port),
             ],
             stdout=log_file,
             stderr=log_file,
