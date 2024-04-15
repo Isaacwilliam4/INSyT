@@ -47,7 +47,19 @@ If you want to run in debug mode, use the flag `--debug`
 
 The frontend application can be used to view and analyze logline classifications.
 
-To run the frontend...
+The frontend is automatically served in the background while INSyT file monitoring is running. You can specify the port at which it is served using the `--port` flag (Default is 5656).
+```bash
+insyt --watch /path/to/dir/ --port 8001
+```
+
+Alternatively, you can also serve just the frontend and inference apis (without file monitoring) using `insyt-server`.
+```bash
+insyt-server --port 8001
+```
+
+Navigate to `http://localhost:[your port here]` to view and interact with the frontend application.
+
+Navigate to `http://localhost:[your port here]/docs` to read the inference and database server api documentation (Provided by SwaggerUI).
 
 
 ## For Developers/Contributors
