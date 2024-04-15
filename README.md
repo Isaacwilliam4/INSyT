@@ -52,7 +52,7 @@ The frontend is automatically served in the background while INSyT file monitori
 insyt --watch /path/to/dir/ --port 8001
 ```
 
-Alternatively, you can also just serve the frontend and inference apis using `insyt-server`.
+Alternatively, you can also serve just the frontend and inference apis (without file monitoring) using `insyt-server`.
 ```bash
 insyt-server --port 8001
 ```
