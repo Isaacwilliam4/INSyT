@@ -5,10 +5,11 @@ import logging
 import argparse
 import datetime
 import requests
+import threading
 import subprocess
 from pathlib import Path
 from insyt.db import Database
-from insyt.file_watcher_new import watch_files
+from insyt.file_watcher import watch_files
 from insyt.worker import main as worker_main
 
 
@@ -41,12 +42,6 @@ def main():
     parser.add_argument(
         "--inf-server-port", type=int, default=8000, help="Inference server port"
     )
-    parser.add_argument(
-        "inf-server-reload",
-        action="store_true",
-        help="Enable auto-reload",
-        default=False,
-    )
     args = parser.parse_args()
 
     if args.debug:
@@ -61,9 +56,6 @@ def main():
 
     assert args.watch or args.run, "Must specify either --watch, or --run"
     assert not (args.watch and args.run), "Cannot specify both --watch and --run"
-
-    tokenizer_ckpt = args.tokenizer
-    model_name = args.model
 
     # check database parent directory
     db_path = Path(os.path.expanduser(args.db))
@@ -87,10 +79,9 @@ def main():
 
         server_process = subprocess.Popen(
             [
-                "insyt-inf-server",
+                "insyt-server",
                 "--port",
                 str(args.inf_server_port),
-                "--reload",
             ],
             stdout=log_file,
             stderr=log_file,
@@ -126,11 +117,21 @@ def main():
         logging.debug("Starting file watcher")
         # Watch files
         max_batch_size = args.max_batch_size
-        watch_files(
-            file_list,
-            db_path,
-            max_batch_size=max_batch_size,
+
+        watch_thread = threading.Thread(
+            target=watch_files,
+            args=(file_list, db_path, max_batch_size),
+            daemon=True,
         )
+
+        watch_thread.start()
+
+        def cleanup_watcher():
+            watch_thread.join()
+
+        atexit.register(cleanup_watcher)
+
+        worker_main()
 
 
 if __name__ == "__main__":
