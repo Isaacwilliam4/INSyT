@@ -1,8 +1,6 @@
 import logging
 import datetime
 
-import numpy as np
-
 from watchfiles import watch
 
 from rq import Queue
