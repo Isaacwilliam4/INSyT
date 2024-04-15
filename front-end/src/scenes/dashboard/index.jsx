@@ -48,7 +48,6 @@ const Dashboard = () => {
     const response = await axios
       .get('http://localhost:5656/api/attack-types-all')
       .then((response) => {
-        console.log(response.data);
         setAttackTypes(response.data);
       });
   };
@@ -60,7 +59,6 @@ const Dashboard = () => {
       data: [],
     };
     attackTypes.forEach((attackType) => {
-      
       attackData.data.push({
         x: attackType.classification,
         y: attackType.count,
@@ -70,51 +68,14 @@ const Dashboard = () => {
   };
 
   const buildBarChartData = () => {
-    const barData = [
-      {
-        country: 'WU',
-        'webshell upload': 0,
-      },
-      {
-        country: 'PC',
-        'password cracking': 0,
-      },
-      {
-        country: 'SC',
-        scan: 0,
-      },
-      {
-        country: 'DE',
-        'data exfiltration': 0,
-      },
-      {
-        country: 'PE',
-        'priviledged escalation': 0,
-      },
-      {
-        country: 'CC',
-        'command and control': 0
-      },
-    ]
+    const barData = [];
     attackTypes.forEach((attackType) => {
-      if (attackType.classification === 'webshell upload') {
-        barData[0]['webshell upload'] = attackType.count;
-      }
-      if (attackType.classification === 'password cracking') {
-        barData[1]['password cracking'] = attackType.count;
-      }
-      if (attackType.classification === 'scan') {
-        barData[2].scan = attackType.count;
-      }
-      if (attackType.classification === 'data exfiltration') {
-        barData[3]['data exfiltration'] = attackType.count;
-      }
-      if (attackType.classification === 'priviledged escalation') {
-        barData[4]['priviledged escalation'] = attackType.count;
-      }
-      if (attackType.classification === 'command and control') {
-        barData[5]['command and control'] = attackType.count;
-      }
+      const entry = {
+        country: attackType.classification,
+      };
+      // Using bracket notation to set the key dynamically
+      entry[attackType.classification] = attackType.count;
+      barData.push(entry);
     });
     // console.log(attackData);
     setBarChartData(barData);
@@ -182,7 +143,7 @@ const Dashboard = () => {
           justifyContent='center'
         >
           <StatBox
-            title={topAttack? topAttack[0].classification : 'N/A'}
+            title={topAttack ? topAttack[0].classification : 'N/A'}
             subtitle='Top Attack Type'
             progress='0.75'
             increase='+14%'
@@ -201,7 +162,7 @@ const Dashboard = () => {
           justifyContent='center'
         >
           <StatBox
-            title={attackTypes? attackTypes.length : 'N/A'}
+            title={attackTypes ? attackTypes.length : 'N/A'}
             subtitle='Different Attack Type Numbers'
             progress='0.50'
             increase='+21%'
@@ -277,7 +238,7 @@ const Dashboard = () => {
                 fontWeight='bold'
                 color={colors.greenAccent[500]}
               >
-                Total: {db? db.length : 'N/A'}
+                Total: {db ? db.length : 'N/A'}
               </Typography>
             </Box>
             <Box>
@@ -289,7 +250,7 @@ const Dashboard = () => {
             </Box>
           </Box>
           <Box height='250px' m='-20px 0 0 0'>
-            <LineChart data={lineData? lineData: []} isDashboard={true} />
+            <LineChart data={lineData ? lineData : []} isDashboard={true} />
           </Box>
         </Box>
         <Box
@@ -310,37 +271,39 @@ const Dashboard = () => {
               Recent Attack Classification
             </Typography>
           </Box>
-          {db? db.map((log, i) => (
-            <Box
-              key={i}
-              display='flex'
-              justifyContent='space-between'
-              alignItems='center'
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p='15px'
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant='h5'
-                  fontWeight='600'
+          {db
+            ? db.map((log, i) => (
+                <Box
+                  key={i}
+                  display='flex'
+                  justifyContent='space-between'
+                  alignItems='center'
+                  borderBottom={`4px solid ${colors.primary[500]}`}
+                  p='15px'
                 >
-                  {log.line.substring(20, 50)}...
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                {log.line.substring(0, 15)}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{log.date}</Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p='5px 10px'
-                borderRadius='4px'
-              >
-                {log.classification}
-              </Box>
-            </Box>
-          )): null}
+                  <Box>
+                    <Typography
+                      color={colors.greenAccent[500]}
+                      variant='h5'
+                      fontWeight='600'
+                    >
+                      {log.line.substring(20, 50)}...
+                    </Typography>
+                    <Typography color={colors.grey[100]}>
+                      {log.line.substring(0, 15)}
+                    </Typography>
+                  </Box>
+                  <Box color={colors.grey[100]}>{log.date}</Box>
+                  <Box
+                    backgroundColor={colors.greenAccent[500]}
+                    p='5px 10px'
+                    borderRadius='4px'
+                  >
+                    {log.classification}
+                  </Box>
+                </Box>
+              ))
+            : null}
         </Box>
 
         {/* ROW 3 */}
@@ -359,13 +322,28 @@ const Dashboard = () => {
             alignItems='center'
             mt='25px'
           >
-            <ProgressCircle progress={nonBenignAttacks? db? Math.ceil(nonBenignAttacks.length/db.length*100)/100: 0: 0} size='125' />
+            <ProgressCircle
+              progress={
+                nonBenignAttacks
+                  ? db
+                    ? Math.ceil((nonBenignAttacks.length / db.length) * 100) /
+                      100
+                    : 0
+                  : 0
+              }
+              size='125'
+            />
             <Typography
               variant='h5'
               color={colors.greenAccent[500]}
               sx={{ mt: '15px' }}
             >
-              {nonBenignAttacks? db? Math.ceil(nonBenignAttacks.length/db.length*100): 0: 0}% Unusual Attacks Detected
+              {nonBenignAttacks
+                ? db
+                  ? Math.ceil((nonBenignAttacks.length / db.length) * 100)
+                  : 0
+                : 0}
+              % Unusual Attacks Detected
             </Typography>
             <Typography>Non Benign Type Attacks Rate</Typography>
           </Box>
@@ -383,7 +361,10 @@ const Dashboard = () => {
             Unusual Attack Quantity
           </Typography>
           <Box height='250px' mt='-20px'>
-            <BarChart data={barChartData? barChartData: []} isDashboard={true} />
+            <BarChart
+              data={barChartData ? barChartData : []}
+              isDashboard={true}
+            />
           </Box>
         </Box>
         <Box
