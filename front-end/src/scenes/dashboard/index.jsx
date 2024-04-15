@@ -25,6 +25,8 @@ const Dashboard = () => {
   const [nonBenignAttacks, setNonBenignAttacks] = useState(0);
   const [topAttack, setTopAttack] = useState(null);
   const [attackTypes, setAttackTypes] = useState(null);
+  const [lineData, setLineData] = useState(null);
+  const [barChartData, setBarChartData] = useState(null);
 
   const fetchNonBenignAttacks = async () => {
     const response = await axios
@@ -44,39 +46,39 @@ const Dashboard = () => {
 
   const fetchAttackTypes = async () => {
     const response = await axios
-      .get('http://localhost:5656/api/attack-types')
+      .get('http://localhost:5656/api/attack-types-all')
       .then((response) => {
         setAttackTypes(response.data);
       });
   };
 
   const buildLineChartData = () => {
-    const data = [];
-    const attackTypes = db.map((attack) => attack.classification);
-    const uniqueAttackTypes = [...new Set(attackTypes)];
-
-    uniqueAttackTypes.forEach((type) => {
-      const attackData = db.filter((attack) => attack.classification === type);
-      const attackCount = attackData.length;
-      const attackDates = attackData.map((attack) => attack.date);
-      const attackDateCounts = attackDates.reduce((acc, date) => {
-        acc[date] = acc[date] ? acc[date] + 1 : 1;
-        return acc;
-      }, {});
-
-      const attackDateData = Object.keys(attackDateCounts).map((date) => ({
-        x: date,
-        y: attackDateCounts[date],
-      }));
-
-      data.push({
-        id: type,
-        color: colors.greenAccent[500],
-        data: attackDateData,
+    const attackData = {
+      id: 'insyt log data classification',
+      color: colors.greenAccent[500],
+      data: [],
+    };
+    attackTypes.forEach((attackType) => {
+      attackData.data.push({
+        x: attackType.classification,
+        y: attackType.count,
       });
     });
+    setLineData([attackData]);
+  };
 
-    return data;
+  const buildBarChartData = () => {
+    const barData = [];
+    attackTypes.forEach((attackType) => {
+      const entry = {
+        country: attackType.classification,
+      };
+      // Using bracket notation to set the key dynamically
+      entry[attackType.classification] = attackType.count;
+      barData.push(entry);
+    });
+    // console.log(attackData);
+    setBarChartData(barData);
   };
 
   const fetchData = async () => {
@@ -88,10 +90,19 @@ const Dashboard = () => {
         await fetchNonBenignAttacks();
         await fetchTopAttack();
         await fetchAttackTypes();
-        let lineData = buildLineChartData();
-        console.log(lineData);
       });
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (attackTypes) {
+      buildLineChartData();
+      buildBarChartData();
+    }
+  }, [attackTypes]);
 
   return (
     <Box m='20px'>
@@ -111,7 +122,7 @@ const Dashboard = () => {
             onClick={fetchData}
           >
             <DownloadOutlinedIcon sx={{ mr: '10px' }} />
-            Generate Reports
+            Regenerate Reports
           </Button>
         </Box>
       </Box>
@@ -132,7 +143,7 @@ const Dashboard = () => {
           justifyContent='center'
         >
           <StatBox
-            title={topAttack? topAttack[0].classification : 'N/A'}
+            title={topAttack ? topAttack[0].classification : 'N/A'}
             subtitle='Top Attack Type'
             progress='0.75'
             increase='+14%'
@@ -151,7 +162,7 @@ const Dashboard = () => {
           justifyContent='center'
         >
           <StatBox
-            title={attackTypes? attackTypes.length : 'N/A'}
+            title={attackTypes ? attackTypes.length : 'N/A'}
             subtitle='Different Attack Type Numbers'
             progress='0.50'
             increase='+21%'
@@ -227,7 +238,7 @@ const Dashboard = () => {
                 fontWeight='bold'
                 color={colors.greenAccent[500]}
               >
-                Total: 53,243
+                Total: {db ? db.length : 'N/A'}
               </Typography>
             </Box>
             <Box>
@@ -239,7 +250,7 @@ const Dashboard = () => {
             </Box>
           </Box>
           <Box height='250px' m='-20px 0 0 0'>
-            <LineChart isDashboard={true} />
+            <LineChart data={lineData ? lineData : []} isDashboard={true} />
           </Box>
         </Box>
         <Box
@@ -260,37 +271,40 @@ const Dashboard = () => {
               Recent Attack Classification
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box
-              key={`${transaction.txId}-${i}`}
-              display='flex'
-              justifyContent='space-between'
-              alignItems='center'
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p='15px'
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant='h5'
-                  fontWeight='600'
+          {db
+            ? db.map((log, i) => (
+                <Box
+                  key={i}
+                  display='flex'
+                  justifyContent='space-between'
+                  alignItems='center'
+                  borderBottom={`4px solid ${colors.primary[500]}`}
+                  p='15px'
                 >
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p='5px 10px'
-                borderRadius='4px'
-              >
-                {transaction.cost}
-              </Box>
-            </Box>
-          ))}
+                  <Box>
+                    <Typography
+                      color={colors.greenAccent[500]}
+                      variant='h5'
+                      fontWeight='600'
+                    >
+                      {log.line.substring(0, 30)}...
+                    </Typography>
+                    <Typography color={colors.grey[100]}>
+                      {/* {log.line.substring(0, 15)} */}
+                      {log.date_time}
+                    </Typography>
+                  </Box>
+                  <Box color={colors.grey[100]}>{log.date}</Box>
+                  <Box
+                    backgroundColor={colors.greenAccent[500]}
+                    p='5px 10px'
+                    borderRadius='4px'
+                  >
+                    {log.classification}
+                  </Box>
+                </Box>
+              ))
+            : null}
         </Box>
 
         {/* ROW 3 */}
@@ -309,15 +323,30 @@ const Dashboard = () => {
             alignItems='center'
             mt='25px'
           >
-            <ProgressCircle size='125' />
+            <ProgressCircle
+              progress={
+                nonBenignAttacks
+                  ? db
+                    ? Math.ceil((nonBenignAttacks.length / db.length) * 100) /
+                      100
+                    : 0
+                  : 0
+              }
+              size='125'
+            />
             <Typography
               variant='h5'
               color={colors.greenAccent[500]}
               sx={{ mt: '15px' }}
             >
-              47% Attacks Detected
+              {nonBenignAttacks
+                ? db
+                  ? Math.ceil((nonBenignAttacks.length / db.length) * 100)
+                  : 0
+                : 0}
+              % Unusual Attacks Detected
             </Typography>
-            <Typography>Excludes Benign Type Attacks</Typography>
+            <Typography>Non Benign Type Attacks Rate</Typography>
           </Box>
         </Box>
         <Box
@@ -333,7 +362,10 @@ const Dashboard = () => {
             Unusual Attack Quantity
           </Typography>
           <Box height='250px' mt='-20px'>
-            <BarChart isDashboard={true} />
+            <BarChart
+              data={barChartData ? barChartData : []}
+              isDashboard={true}
+            />
           </Box>
         </Box>
         <Box

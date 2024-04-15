@@ -85,6 +85,18 @@ app.get('/api/attack-types-all', (req, res) => {
   });
 });
 
+// Select except for 'severity' column
+app.get('/api/except-severity', (req, res) => {
+  db.all('SELECT id, file_path, date_time, line_number, line, context, classification, analysis FROM insyt', (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -17,6 +17,8 @@ ollama create insyt -f insyt/models/ollama/Modelfile
 ```
 You can still use the software without installing ollama, just without analysis and response reccomendations.
 
+**Note for Windows users:** Redis is not officially supported on Windows. However, you can install Redis on Windows for development by following [these instructions](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/).
+
 ## Usage
 
 ### Start monitoring log lines
@@ -40,6 +42,12 @@ Replace `/path/to/your/db` with the actual path to the database file you want to
 ### Debug
 
 If you want to run in debug mode, use the flag `--debug`
+
+## Frontend
+
+The frontend application can be used to view and analyze logline classifications.
+
+To run the frontend...
 
 
 ## For Developers/Contributors
