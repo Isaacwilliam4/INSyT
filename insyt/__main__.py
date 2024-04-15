@@ -8,7 +8,7 @@ import requests
 import subprocess
 from pathlib import Path
 from insyt.db import Database
-from insyt.file_watcher import watch_files
+from insyt.file_watcher_new import watch_files
 from insyt.worker import main as worker_main
 
 
@@ -129,8 +129,6 @@ def main():
         watch_files(
             file_list,
             db_path,
-            tokenizer_ckpt,
-            model_name,
             max_batch_size=max_batch_size,
         )
 
