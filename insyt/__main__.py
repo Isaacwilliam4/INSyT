@@ -42,6 +42,7 @@ def main():
     parser.add_argument(
         "--inf-server-port", type=int, default=5656, help="Inference server port"
     )
+    parser.add_argument("--purge", help="Purge the database", action="store_true")
     args = parser.parse_args()
 
     if args.debug:
@@ -112,6 +113,9 @@ def main():
     elif args.watch:
         # Create database object
         db = Database(db_path)
+        if args.purge:
+            logging.debug("Purging database")
+            db.purge()
         logging.debug(f"Using database file: {args.db}")
         file_list = args.watch
         logging.debug(f"Configuring the following files to watch: {file_list}")

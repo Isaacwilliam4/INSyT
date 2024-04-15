@@ -37,6 +37,13 @@ insyt --watch /path/to/your/file1 /path/to/your/file2 --db /path/to/your/db
 ```
 Replace `/path/to/your/db` with the actual path to the database file you want to use.
 
+### Resetting the database
+
+Run with the `--purge` flag to delete all rows in the database before starting to monitor files.
+```bash
+insyt --watch /path/to/watch/dir/ --purge
+```
+
 ### Debug
 
 If you want to run in debug mode, use the flag `--debug`
