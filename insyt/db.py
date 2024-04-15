@@ -25,6 +25,13 @@ class Database:
         )
         self.conn.commit()
 
+    def get_file_map(self):
+        self.cur.execute(
+            "SELECT file_path, MAX(line_number) FROM insyt GROUP BY file_path"
+        )
+        rows = self.cur.fetchall()
+        return {row[0]: {"position": row[1]} for row in rows}
+
     def fetch(self):
         self.cur.execute("SELECT * FROM insyt")
         rows = self.cur.fetchall()

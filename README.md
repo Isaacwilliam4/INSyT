@@ -30,8 +30,6 @@ Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to
 
 It will also place new lines into a redis queue for classification and analysis, as well as process those jobs.
 
-**Note:** Currently the file watcher will clear the database every time you run it. This will be changed in the future.
-
 ### Custom database paths
 The INSyT sqlite database is by default contained at `~/.cache/insyt/insyt.db`. You can also pass in a different database filename using the --db flag. For example:
 ```bash

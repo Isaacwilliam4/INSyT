@@ -110,9 +110,8 @@ def main():
         worker_main()
 
     elif args.watch:
-        # Create and purge database object
+        # Create database object
         db = Database(db_path)
-        db.purge()
         logging.debug(f"Using database file: {args.db}")
         file_list = args.watch
         logging.debug(f"Configuring the following files to watch: {file_list}")
