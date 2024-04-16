@@ -36,13 +36,13 @@ const LogData = () => {
         </Typography>
       ),
     },
-    { field: 'context', headerName: 'Context', flex: 1 },
+    { field: 'confidence', headerName: 'Confidence', flex: 1 },
     { field: 'analysis', headerName: 'Analysis', flex: 1 },
   ];
 
   const fetchLogDataExceptSeverity = async () => {
     await axios
-      .get('http://localhost:5656/api/except-severity', {
+      .get('http://localhost:5656/api/db/except-severity', {
         params: {
           severity: 0.0,
         },
