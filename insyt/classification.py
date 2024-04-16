@@ -51,6 +51,11 @@ def classify(
     db_lines = np.array(
         db.fetch_sql("SELECT id, line FROM insyt where classification IS NULL")
     )
+    if len(db_lines) == 1:
+        db_lines = db_lines.reshape(1, 2)
+    elif len(db_lines) == 0:
+        log.info("No logs to classify")
+        return
     ids = db_lines[:, 0].tolist()
     log_lines = db_lines[:, 1].tolist()
     request = ClassificationRequest(lines=log_lines, max_batch_size=max_batch_size)
