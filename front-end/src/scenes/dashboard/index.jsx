@@ -26,6 +26,12 @@ const Dashboard = () => {
   const [topAttack, setTopAttack] = useState(null);
   const [attackTypes, setAttackTypes] = useState(null);
   const [lineData, setLineData] = useState(null);
+  const [lineDataYears, setLineDataYears] = useState(null);
+  const [lineDataMonths, setLineDataMonths] = useState(null);
+  const [lineDataDates, setLineDataDates] = useState(null);
+  const [lineDataHours, setLineDataHours] = useState(null);
+  const [lineDataMinutes, setLineDataMinutes] = useState(null);
+  const [basicLineData, setBasicLineData] = useState(null);
   const [barChartData, setBarChartData] = useState(null);
 
   const fetchNonBenignAttacks = async () => {
@@ -61,12 +67,57 @@ const Dashboard = () => {
     };
 
     let date_time_map = new Map();
+    let year_map = new Map();
+    let month_map = new Map();
+    let date_map = new Map();
+    let hour_map = new Map();
+    let minute_map = new Map();
 
     db.forEach((log) => {
       if (date_time_map.has(log.date_time)) {
         date_time_map.set(log.date_time, date_time_map.get(log.date_time) + 1);
       } else {
         date_time_map.set(log.date_time, 1);
+      }
+      if (year_map.has(log.date_time.substring(0, 4))) {
+        year_map.set(
+          log.date_time.substring(0, 4),
+          year_map.get(log.date_time.substring(0, 4)) + 1
+        );
+      } else {
+        year_map.set(log.date_time.substring(0, 4), 1);
+      }
+      if (month_map.has(log.date_time.substring(0, 7))) {
+        month_map.set(
+          log.date_time.substring(0, 7),
+          month_map.get(log.date_time.substring(0, 7)) + 1
+        );
+      } else {
+        month_map.set(log.date_time.substring(0, 7), 1);
+      }
+      if (date_map.has(log.date_time.substring(0, 10))) {
+        date_map.set(
+          log.date_time.substring(0, 10),
+          date_map.get(log.date_time.substring(0, 10)) + 1
+        );
+      } else {
+        date_map.set(log.date_time.substring(0, 10), 1);
+      }
+      if (hour_map.has(log.date_time.substring(0, 13))) {
+        hour_map.set(
+          log.date_time.substring(0, 13),
+          hour_map.get(log.date_time.substring(0, 13) + 1)
+        );
+      } else {
+        hour_map.set(log.date_time.substring(0, 13), 1);
+      }
+      if (minute_map.has(log.date_time.substring(0, 16))) {
+        minute_map.set(
+          log.date_time.substring(0, 16),
+          minute_map.get(log.date_time.substring(0, 16)) + 1
+        );
+      } else {
+        minute_map.set(log.date_time.substring(0, 16), 1);
       }
     });
 
@@ -85,7 +136,108 @@ const Dashboard = () => {
       });
     });
 
+    const sortedYearMap = new Map(
+      [...year_map.entries()].sort((a, b) => {
+        return new Date(a[0]) - new Date(b[0]);
+      })
+    );
+
+    const sortedMonthMap = new Map(
+      [...month_map.entries()].sort((a, b) => {
+        return new Date(a[0]) - new Date(b[0]);
+      })
+    );
+
+    const sortedDateMap = new Map(
+      [...date_map.entries()].sort((a, b) => {
+        return new Date(a[0]) - new Date(b[0]);
+      })
+    );
+
+    const sortedHourMap = new Map(
+      [...hour_map.entries()].sort((a, b) => {
+        return new Date(a[0]) - new Date(b[0]);
+      })
+    );
+
+    const sortedMinuteMap = new Map(
+      [...minute_map.entries()].sort((a, b) => {
+        return new Date(a[0]) - new Date(b[0]);
+      })
+    );
+
+    const attackYearData = {
+      id: 'insyt log data classification',
+      color: colors.greenAccent[500],
+      data: [],
+    };
+
+    sortedYearMap.forEach((value, key) => {
+      attackYearData.data.push({
+        x: key,
+        y: value,
+      });
+    });
+
+    const attackMonthData = {
+      id: 'insyt log data classification',
+      color: colors.greenAccent[500],
+      data: [],
+    };
+
+    sortedMonthMap.forEach((value, key) => {
+      attackMonthData.data.push({
+        x: key,
+        y: value,
+      });
+    });
+
+    const attackDateData = {
+      id: 'insyt log data classification',
+      color: colors.greenAccent[500],
+      data: [],
+    };
+
+    sortedDateMap.forEach((value, key) => {
+      attackDateData.data.push({
+        x: key,
+        y: value,
+      });
+    });
+
+    const attackHourData = {
+      id: 'insyt log data classification',
+      color: colors.greenAccent[500],
+      data: [],
+    };
+
+    sortedHourMap.forEach((value, key) => {
+      attackHourData.data.push({
+        x: key,
+        y: value,
+      });
+    });
+
+    const attackMinuteData = {
+      id: 'insyt log data classification',
+      color: colors.greenAccent[500],
+      data: [],
+    };
+
+    sortedMinuteMap.forEach((value, key) => {
+      attackMinuteData.data.push({
+        x: key,
+        y: value,
+      });
+    });
+
+    setLineDataYears([sortedYearMap]);
+    setLineDataMonths([sortedMonthMap]);
+    setLineDataDates([sortedDateMap]);
+    setLineDataHours([sortedHourMap]);
+    setLineDataMinutes([sortedMinuteMap]);
     setLineData([attackData]);
+    setBasicLineData([sortedMinuteMap]);
   };
 
   const buildBarChartData = () => {
