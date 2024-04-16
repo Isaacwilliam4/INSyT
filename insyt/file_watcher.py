@@ -53,4 +53,4 @@ def queue_classifications(
 ):
     redis_conn = Redis()
     q = Queue("classification", connection=redis_conn)
-    q.enqueue(classify, db_name, max_batch_size, inference_server=inference_server)
+    q.enqueue(classify, db_name, max_batch_size, inf_server=inference_server)
