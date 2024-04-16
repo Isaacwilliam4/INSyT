@@ -36,6 +36,7 @@ const LogData = () => {
         </Typography>
       ),
     },
+    { field: 'confidence', headerName: 'Confidence', flex: 1 },
     { field: 'analysis', headerName: 'Analysis', flex: 1 },
   ];
 

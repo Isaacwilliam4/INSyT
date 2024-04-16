@@ -53,17 +53,38 @@ const Dashboard = () => {
   };
 
   const buildLineChartData = () => {
+    //Build up the ticket number based on the date and time
     const attackData = {
       id: 'insyt log data classification',
       color: colors.greenAccent[500],
       data: [],
     };
-    attackTypes.forEach((attackType) => {
+
+    let date_time_map = new Map();
+
+    db.forEach((log) => {
+      if (date_time_map.has(log.date_time)) {
+        date_time_map.set(log.date_time, date_time_map.get(log.date_time) + 1);
+      } else {
+        date_time_map.set(log.date_time, 1);
+      }
+    });
+
+    // sort the map by date
+    const sortedMap = new Map(
+      [...date_time_map.entries()].sort((a, b) => {
+        return new Date(a[0]) - new Date(b[0]);
+      })
+    );
+
+    // set the data as a list of objects
+    sortedMap.forEach((value, key) => {
       attackData.data.push({
-        x: attackType.classification,
-        y: attackType.count,
+        x: key,
+        y: value,
       });
     });
+
     setLineData([attackData]);
   };
 
