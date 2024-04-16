@@ -30,14 +30,19 @@ Replace `/path/to/your/file1` and `/path/to/your/file2` with the actual paths to
 
 It will also place new lines into a redis queue for classification and analysis, as well as process those jobs.
 
-**Note:** Currently the file watcher will clear the database every time you run it. This will be changed in the future.
-
 ### Custom database paths
 The INSyT sqlite database is by default contained at `~/.cache/insyt/insyt.db`. You can also pass in a different database filename using the --db flag. For example:
 ```bash
 insyt --watch /path/to/your/file1 /path/to/your/file2 --db /path/to/your/db
 ```
 Replace `/path/to/your/db` with the actual path to the database file you want to use.
+
+### Resetting the database
+
+Run with the `--purge` flag to delete all rows in the database before starting to monitor files.
+```bash
+insyt --watch /path/to/watch/dir/ --purge
+```
 
 ### Debug
 
@@ -47,7 +52,19 @@ If you want to run in debug mode, use the flag `--debug`
 
 The frontend application can be used to view and analyze logline classifications.
 
-To run the frontend...
+The frontend is automatically served in the background while INSyT file monitoring is running. You can specify the port at which it is served using the `--port` flag (Default is 5656).
+```bash
+insyt --watch /path/to/dir/ --port 8001
+```
+
+Alternatively, you can also serve just the frontend and inference apis (without file monitoring) using `insyt-server`.
+```bash
+insyt-server --port 8001
+```
+
+Navigate to `http://localhost:[your port here]` to view and interact with the frontend application.
+
+Navigate to `http://localhost:[your port here]/docs` to read the inference and database server api documentation (Provided by SwaggerUI).
 
 
 ## For Developers/Contributors

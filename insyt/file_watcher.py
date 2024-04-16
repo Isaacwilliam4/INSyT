@@ -15,7 +15,7 @@ def watch_files(
     database: str,
     max_batch_size: int = 32,
 ):
-    file_map = {}
+    file_map = Database(database).get_file_map()
     for changes in watch(*file_list):
         for change in changes:
             file_path = change[1]

@@ -40,8 +40,12 @@ def main():
         help="Maximum batch size for the model",
     )
     parser.add_argument(
-        "--inf-server-port", type=int, default=5656, help="Inference server port"
+        "--port",
+        type=int,
+        default=5656,
+        help="Port to run inference, db, and frontend servers",
     )
+    parser.add_argument("--purge", help="Purge the database", action="store_true")
     args = parser.parse_args()
 
     if args.debug:
@@ -66,7 +70,7 @@ def main():
         logging.debug(f"Creating database directory: {db_dir}")
 
     # Start the inference server
-    logging.info("Starting Inference Server at port %s", args.inf_server_port)
+    logging.info("Starting Inference Server at port %s", args.port)
     logging.info("Logs will be written to ~/.cache/insyt/insyt-inf-server.log")
     with open(
         os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "a"
@@ -83,7 +87,7 @@ def main():
             [
                 "insyt-server",
                 "--port",
-                str(args.inf_server_port),
+                str(args.port),
             ],
             stdout=log_file,
             stderr=log_file,
@@ -92,7 +96,7 @@ def main():
     # Wait for the server to start up
     while True:
         try:
-            response = requests.get(f"http://localhost:{args.inf_server_port}/health")
+            response = requests.get(f"http://localhost:{args.port}/health")
             if response.status_code == 200:
                 break
         except requests.exceptions.ConnectionError:
@@ -110,9 +114,11 @@ def main():
         worker_main()
 
     elif args.watch:
-        # Create and purge database object
+        # Create database object
         db = Database(db_path)
-        db.purge()
+        if args.purge:
+            logging.debug("Purging database")
+            db.purge()
         logging.debug(f"Using database file: {args.db}")
         file_list = args.watch
         logging.debug(f"Configuring the following files to watch: {file_list}")
