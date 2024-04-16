@@ -70,7 +70,7 @@ def main():
         logging.debug(f"Creating database directory: {db_dir}")
 
     # Start the inference server
-    logging.info("Starting Inference Server at port %s", args.inf_server_port)
+    logging.info("Starting Inference Server at port %s", args.port)
     logging.info("Logs will be written to ~/.cache/insyt/insyt-inf-server.log")
     with open(
         os.path.expanduser("~/.cache/insyt/insyt-inf-server.log"), "a"
@@ -96,7 +96,7 @@ def main():
     # Wait for the server to start up
     while True:
         try:
-            response = requests.get(f"http://localhost:{args.inf_server_port}/health")
+            response = requests.get(f"http://localhost:{args.port}/health")
             if response.status_code == 200:
                 break
         except requests.exceptions.ConnectionError:
