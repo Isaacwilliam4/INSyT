@@ -128,7 +128,7 @@ def main():
 
         watch_thread = threading.Thread(
             target=watch_files,
-            args=(file_list, db_path, max_batch_size),
+            args=(file_list, db_path, max_batch_size, f"http://localhost:{args.port}"),
             daemon=True,
         )
 

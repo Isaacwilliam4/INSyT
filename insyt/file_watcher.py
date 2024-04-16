@@ -14,6 +14,7 @@ def watch_files(
     file_list: list[str],
     database: str,
     max_batch_size: int = 32,
+    inference_server: str = "http://localhost:5656",
 ):
     file_map = Database(database).get_file_map()
     for changes in watch(*file_list):
@@ -30,7 +31,9 @@ def watch_files(
                 previous_lines = lines[max(0, i - 4) : i]
                 date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 add_to_db(date_time, file_path, i + 1, line, previous_lines, database)
-            queue_classifications(database, max_batch_size)
+            queue_classifications(
+                database, max_batch_size, inference_server=inference_server
+            )
 
 
 def add_to_db(date_time, file_path, line_number, line, previous_lines, db_name):
@@ -45,7 +48,9 @@ def add_to_db(date_time, file_path, line_number, line, previous_lines, db_name):
     )
 
 
-def queue_classifications(db_name, max_batch_size):
+def queue_classifications(
+    db_name, max_batch_size, inference_server="http://localhost:5656"
+):
     redis_conn = Redis()
     q = Queue("classification", connection=redis_conn)
-    q.enqueue(classify, db_name, max_batch_size)
+    q.enqueue(classify, db_name, max_batch_size, inference_server=inference_server)
