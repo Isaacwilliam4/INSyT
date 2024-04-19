@@ -13,7 +13,12 @@ pip install insyt
 
 **Note:** Generative AI analysis is built on [ollama](https://github.com/ollama/ollama). And as such it is important that ollama is installed on your machine. Visit there github to learn how to install on you specific system. After installing ollama, run the following to create the insyt model:
 ```bash
-ollama create insyt -f insyt/models/ollama/Modelfile
+ollama create insyt -f insyt/models/ollama/gemma/Modelfile
+```
+
+If your machine has the capacity, llama3 gives much better analysis and reponse reccomendations, though is more resource intensive and may not run as quickly as Gemma.
+```bash
+ollama create insyt -f insyt/models/ollama/llama3/Modelfile
 ```
 You can still use the software without installing ollama, just without analysis and response reccomendations.
 
