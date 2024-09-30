@@ -1,6 +1,7 @@
 # INSyT - Innovative Network Security Technologies
 
-INSyT is a LLM-based Network Instrusion Detection System designed to detect and analyze anomalous and dangerous network and system behavior.
+INSyT is a LLM-based Network Instrusion Detection System designed to detect and analyze anomalous and dangerous network and system behavior. The trained model for this project 
+can be found at [huggingface](https://huggingface.co/isaacwilliam4/insyt).
 
 ## Installation
 
